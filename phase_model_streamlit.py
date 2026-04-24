@@ -167,8 +167,8 @@ distribution of complexity scores.
 
 ### Key assumptions
 
-- Gap distributions are triangular with the mode at the phase minimum. For Stab and Maint the mode slides toward max as the patient progresses through the phase (Maint ramp over {MAINT_RAMP_TRANSITIONS} transitions).
-- Prep is a fixed assumption: {int(PREP_FRACTION * 100)}% of caseload, {PREP_DURATION} transition, {PREP_GAP_WEEKS[0]} to {PREP_GAP_WEEKS[1]} week gap.
+- Within each phase, most appointments are booked at the shorter end of that phase's gap range, with progressively fewer booked at the longer end. As a patient progresses through Stabilisation or Maintenance, their typical appointment gap gradually lengthens toward the upper end of that phase's range. In Maintenance, the typical gap reaches the maximum after {MAINT_RAMP_TRANSITIONS} appointments and then holds steady.
+- Preparation is a fixed assumption, not adjustable via sliders: {int(PREP_FRACTION * 100)}% of patients spend {PREP_DURATION} transition in Preparation (with a {PREP_GAP_WEEKS[0]} to {PREP_GAP_WEEKS[1]} week gap) before moving into Initiation. This represents patients awaiting pre-initiation investigations.
 - C20 / C50 / C80 refer to complexity values 0.20, 0.50, and 0.80 - roughly the simplest 5%, median, and most complex 5% of the caseload at default settings.
 """)
 
@@ -191,7 +191,7 @@ with st.sidebar:
             help="Spread of complexity. Narrow = homogeneous caseload, wide = diverse mix of simple and complex patients.",
         )
 
-    with st.expander("Stab start (transition)", expanded=True):
+    with st.expander("Stabilisation start (transition)", expanded=True):
         stab_earliest = st.slider(
             "Simple (C20)",  1, 10, 2, 1,
             help="Transition at which the simplest patients (complexity 0.20) move into Stabilisation.",
@@ -205,7 +205,7 @@ with st.sidebar:
             help="Transition at which the most complex patients (complexity 0.80) move into Stabilisation.",
         )
 
-    with st.expander("Maint start (transition)", expanded=True):
+    with st.expander("Maintenance start (transition)", expanded=True):
         maint_earliest = st.slider(
             "Simple (C20) ",  1, 15, 5, 1, key="maint_e",
             help="Transition at which the simplest patients move into Maintenance.",
@@ -215,33 +215,33 @@ with st.sidebar:
             help="Transition at which the most complex patients move into Maintenance.",
         )
 
-    with st.expander("Init cadence (weeks)", expanded=False):
+    with st.expander("Initiation cadence (weeks)", expanded=False):
         init_gap_min = st.slider(
-            "Init gap min", 0, 8, 2, 1,
+            "Initiation gap min", 0, 8, 2, 1,
             help="Shortest number of weeks between appointments during Initiation.",
         )
         init_gap_max = st.slider(
-            "Init gap max", 0, 8, 3, 1,
+            "Initiation gap max", 0, 8, 3, 1,
             help="Longest number of weeks between appointments during Initiation.",
         )
 
-    with st.expander("Stab cadence (weeks)", expanded=False):
+    with st.expander("Stabilisation cadence (weeks)", expanded=False):
         stab_gap_min = st.slider(
-            "Stab gap min", 0, 12, 3, 1,
+            "Stabilisation gap min", 0, 12, 3, 1,
             help="Shortest number of weeks between appointments during Stabilisation.",
         )
         stab_gap_max = st.slider(
-            "Stab gap max", 0, 12, 8, 1,
+            "Stabilisation gap max", 0, 12, 8, 1,
             help="Longest number of weeks between appointments during Stabilisation.",
         )
 
-    with st.expander("Maint cadence (weeks)", expanded=False):
+    with st.expander("Maintenance cadence (weeks)", expanded=False):
         maint_gap_min = st.slider(
-            "Maint gap min", 0, 24, 10, 1,
+            "Maintenance gap min", 0, 24, 10, 1,
             help="Shortest number of weeks between appointments during Maintenance.",
         )
         maint_gap_max = st.slider(
-            "Maint gap max", 0, 24, 15, 1,
+            "Maintenance gap max", 0, 24, 15, 1,
             help="Longest number of weeks between appointments during Maintenance.",
         )
 
