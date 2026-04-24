@@ -154,6 +154,8 @@ A patient progresses through four clinical phases:
 - **Stabilisation** - consolidation once an effective plan is in place.
 - **Maintenance** - routine follow-up once stable.
 
+Each **transition** on the chart x-axis is the gap between two consecutive appointments: transition 1 is the gap between appointment 1 and appointment 2, transition 2 between appointment 2 and 3, and so on. The phase shown at a given transition is the phase of that gap.
+
 How quickly a patient moves through each phase depends on their **complexity**
 (a 0 to 1 score combining factors like comorbidity, symptom severity, psychosocial
 load, and treatment resistance). The caseload is modelled as a bell-shaped
