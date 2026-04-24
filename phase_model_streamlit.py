@@ -156,24 +156,24 @@ with st.sidebar:
 
     with st.expander("Stab start (transition)", expanded=True):
         stab_earliest = st.slider("Simple (C20)",  1, 10, 2, 1)
-        stab_median   = st.slider("Median (C50)",  2, 15, 5, 1)
-        stab_latest   = st.slider("Complex (C80)", 5, 20, 8, 1)
+        stab_median   = st.slider("Median (C50)",  1, 10, 5, 1)
+        stab_latest   = st.slider("Complex (C80)", 1, 10, 8, 1)
 
     with st.expander("Maint start (transition)", expanded=True):
-        maint_earliest = st.slider("Simple (C20) ",  2, 15, 5, 1, key="maint_e")
-        maint_latest   = st.slider("Complex (C80) ", 5, 30, 10, 1, key="maint_l")
+        maint_earliest = st.slider("Simple (C20) ",  1, 15, 5, 1, key="maint_e")
+        maint_latest   = st.slider("Complex (C80) ", 1, 15, 10, 1, key="maint_l")
 
     with st.expander("Init cadence (weeks)", expanded=False):
         init_gap_min = st.slider("Init gap min", 0, 8, 2, 1)
-        init_gap_max = st.slider("Init gap max", 1, 16, 3, 1)
+        init_gap_max = st.slider("Init gap max", 0, 8, 3, 1)
 
     with st.expander("Stab cadence (weeks)", expanded=False):
-        stab_gap_min = st.slider("Stab gap min", 1, 12, 3, 1)
-        stab_gap_max = st.slider("Stab gap max", 2, 24, 8, 1)
+        stab_gap_min = st.slider("Stab gap min", 0, 12, 3, 1)
+        stab_gap_max = st.slider("Stab gap max", 0, 12, 8, 1)
 
     with st.expander("Maint cadence (weeks)", expanded=False):
-        maint_gap_min = st.slider("Maint gap min", 4, 26, 10, 1)
-        maint_gap_max = st.slider("Maint gap max", 8, 52, 15, 1)
+        maint_gap_min = st.slider("Maint gap min", 0, 24, 10, 1)
+        maint_gap_max = st.slider("Maint gap max", 0, 24, 15, 1)
 
 # ---- Run simulation ----
 phase_arr, c, gaps = simulate(
@@ -240,20 +240,6 @@ ax2.grid(True, alpha=0.3)
 fig.tight_layout()
 
 st.pyplot(fig)
-
-# ---- Anchor summary ----
-def at(col): return col - 1
-prep_t1   = (phase_arr[:, at(1)]  == 0).mean()
-prep_t2   = (phase_arr[:, at(2)]  == 0).mean()
-stab_by_t5  = (phase_arr[:, at(5)]  >= 2).mean()
-init_at_t10 = (phase_arr[:, at(min(10, n_transitions))] == 1).mean() if n_transitions >= 10 else None
-
-col_a, col_b, col_c, col_d = st.columns(4)
-col_a.metric("Prep at T1",            f"{prep_t1:.1%}")
-col_b.metric("Prep at T2",            f"{prep_t2:.1%}")
-col_c.metric("Reached Stab by T5",    f"{stab_by_t5:.1%}")
-if init_at_t10 is not None:
-    col_d.metric("Still in Init at T10", f"{init_at_t10:.1%}")
 
 # ---- Download button ----
 buf = io.BytesIO()
