@@ -137,43 +137,113 @@ st.set_page_config(
 )
 
 st.title("Theoretical caseload cadence model")
-st.caption(
-    f"Prep (stated assumption): {int(PREP_FRACTION * 100)}% of caseload, "
-    f"{PREP_DURATION} transition, {PREP_GAP_WEEKS[0]}-{PREP_GAP_WEEKS[1]} week gap. "
-    f"Gap shape: triangular; Init mode at min; Stab and Maint modes slide min to max "
-    f"(Maint ramp over {MAINT_RAMP_TRANSITIONS} transitions)."
+st.markdown(
+    "Explore how a clinician's caseload distributes across clinical phases as patients "
+    "progress through successive appointments. Adjust the sliders on the left to see the "
+    "effect on phase mix and expected appointment cadence."
 )
+
+with st.expander("About this model"):
+    st.markdown(f"""
+### What it models
+
+A patient progresses through four clinical phases:
+
+- **Preparation** - patients needing more investigations before initiation can start.
+- **Initiation** - titration and early treatment establishment.
+- **Stabilisation** - consolidation once an effective plan is in place.
+- **Maintenance** - routine follow-up once stable.
+
+How quickly a patient moves through each phase depends on their **complexity**
+(a 0 to 1 score combining factors like comorbidity, symptom severity, psychosocial
+load, and treatment resistance). The caseload is modelled as a bell-shaped
+distribution of complexity scores.
+
+### Reading the three panels
+
+- **Complexity distribution** (left): how patient complexity is spread across the caseload.
+- **Caseload phase mix** (middle): at each appointment transition, the proportion of the caseload in each phase.
+- **Expected cadence spread** (right): the distribution of weeks between appointments at each transition. The median line rises as patients move into later, longer-spaced phases.
+
+### Key assumptions
+
+- Gap distributions are triangular with the mode at the phase minimum. For Stab and Maint the mode slides toward max as the patient progresses through the phase (Maint ramp over {MAINT_RAMP_TRANSITIONS} transitions).
+- Prep is a fixed assumption: {int(PREP_FRACTION * 100)}% of caseload, {PREP_DURATION} transition, {PREP_GAP_WEEKS[0]} to {PREP_GAP_WEEKS[1]} week gap.
+- C20 / C50 / C80 refer to complexity values 0.20, 0.50, and 0.80 - roughly the simplest 5%, median, and most complex 5% of the caseload at default settings.
+""")
 
 with st.sidebar:
     st.header("Parameters")
 
     with st.expander("Simulation", expanded=True):
-        n_transitions = st.slider("Number of transitions", 5, 20, 10, 1)
+        n_transitions = st.slider(
+            "Number of transitions", 5, 20, 10, 1,
+            help="Number of future appointment transitions to model.",
+        )
 
     with st.expander("Caseload complexity", expanded=True):
-        complexity_mean = st.slider("Complexity mean", 0.20, 0.80, 0.50, 0.01)
-        complexity_sd = st.slider("Complexity SD", 0.05, 0.30, 0.18, 0.01)
+        complexity_mean = st.slider(
+            "Complexity mean", 0.20, 0.80, 0.50, 0.01,
+            help="Average complexity of the caseload (0 = all simple, 1 = all complex).",
+        )
+        complexity_sd = st.slider(
+            "Complexity SD", 0.05, 0.30, 0.18, 0.01,
+            help="Spread of complexity. Narrow = homogeneous caseload, wide = diverse mix of simple and complex patients.",
+        )
 
     with st.expander("Stab start (transition)", expanded=True):
-        stab_earliest = st.slider("Simple (C20)",  1, 10, 2, 1)
-        stab_median   = st.slider("Median (C50)",  1, 10, 5, 1)
-        stab_latest   = st.slider("Complex (C80)", 1, 10, 8, 1)
+        stab_earliest = st.slider(
+            "Simple (C20)",  1, 10, 2, 1,
+            help="Transition at which the simplest patients (complexity 0.20) move into Stabilisation.",
+        )
+        stab_median = st.slider(
+            "Median (C50)",  1, 10, 5, 1,
+            help="Transition at which the median patient (complexity 0.50) moves into Stabilisation.",
+        )
+        stab_latest = st.slider(
+            "Complex (C80)", 1, 10, 8, 1,
+            help="Transition at which the most complex patients (complexity 0.80) move into Stabilisation.",
+        )
 
     with st.expander("Maint start (transition)", expanded=True):
-        maint_earliest = st.slider("Simple (C20) ",  1, 15, 5, 1, key="maint_e")
-        maint_latest   = st.slider("Complex (C80) ", 1, 15, 10, 1, key="maint_l")
+        maint_earliest = st.slider(
+            "Simple (C20) ",  1, 15, 5, 1, key="maint_e",
+            help="Transition at which the simplest patients move into Maintenance.",
+        )
+        maint_latest = st.slider(
+            "Complex (C80) ", 1, 15, 10, 1, key="maint_l",
+            help="Transition at which the most complex patients move into Maintenance.",
+        )
 
     with st.expander("Init cadence (weeks)", expanded=False):
-        init_gap_min = st.slider("Init gap min", 0, 8, 2, 1)
-        init_gap_max = st.slider("Init gap max", 0, 8, 3, 1)
+        init_gap_min = st.slider(
+            "Init gap min", 0, 8, 2, 1,
+            help="Shortest number of weeks between appointments during Initiation.",
+        )
+        init_gap_max = st.slider(
+            "Init gap max", 0, 8, 3, 1,
+            help="Longest number of weeks between appointments during Initiation.",
+        )
 
     with st.expander("Stab cadence (weeks)", expanded=False):
-        stab_gap_min = st.slider("Stab gap min", 0, 12, 3, 1)
-        stab_gap_max = st.slider("Stab gap max", 0, 12, 8, 1)
+        stab_gap_min = st.slider(
+            "Stab gap min", 0, 12, 3, 1,
+            help="Shortest number of weeks between appointments during Stabilisation.",
+        )
+        stab_gap_max = st.slider(
+            "Stab gap max", 0, 12, 8, 1,
+            help="Longest number of weeks between appointments during Stabilisation.",
+        )
 
     with st.expander("Maint cadence (weeks)", expanded=False):
-        maint_gap_min = st.slider("Maint gap min", 0, 24, 10, 1)
-        maint_gap_max = st.slider("Maint gap max", 0, 24, 15, 1)
+        maint_gap_min = st.slider(
+            "Maint gap min", 0, 24, 10, 1,
+            help="Shortest number of weeks between appointments during Maintenance.",
+        )
+        maint_gap_max = st.slider(
+            "Maint gap max", 0, 24, 15, 1,
+            help="Longest number of weeks between appointments during Maintenance.",
+        )
 
 # ---- Run simulation ----
 phase_arr, c, gaps = simulate(
@@ -240,6 +310,12 @@ ax2.grid(True, alpha=0.3)
 fig.tight_layout()
 
 st.pyplot(fig)
+st.caption(
+    "Left: distribution of patient complexity across the caseload. "
+    "Middle: proportion of caseload in each phase at each transition. "
+    "Right: median gap (black line), interquartile range (darker band), and 10-to-90 percentile range (lighter band) "
+    "of weeks between appointments at each transition."
+)
 
 # ---- Download button ----
 buf = io.BytesIO()
