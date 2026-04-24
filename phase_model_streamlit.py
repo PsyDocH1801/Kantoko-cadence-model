@@ -207,21 +207,21 @@ with st.sidebar:
             help="Transition at which the simplest patients (complexity 0.20) move into Stabilisation.",
         )
         stab_median = st.slider(
-            "Median (C50)",  1, 10, 5, 1,
+            "Median (C50)",  1, 10, 4, 1,
             help="Transition at which the median patient (complexity 0.50) moves into Stabilisation.",
         )
         stab_latest = st.slider(
-            "Complex (C80)", 1, 10, 8, 1,
+            "Complex (C80)", 1, 10, 7, 1,
             help="Transition at which the most complex patients (complexity 0.80) move into Stabilisation.",
         )
 
     with st.expander("Maintenance start (transition)", expanded=True):
         maint_earliest = st.slider(
-            "Simple (C20) ",  1, 15, 5, 1, key="maint_e",
+            "Simple (C20) ",  1, 15, 4, 1, key="maint_e",
             help="Transition at which the simplest patients move into Maintenance.",
         )
         maint_latest = st.slider(
-            "Complex (C80) ", 1, 15, 10, 1, key="maint_l",
+            "Complex (C80) ", 1, 15, 8, 1, key="maint_l",
             help="Transition at which the most complex patients move into Maintenance.",
         )
 
@@ -231,13 +231,13 @@ with st.sidebar:
             help="Shortest number of weeks between appointments during Initiation.",
         )
         init_gap_max = st.slider(
-            "Initiation gap max", 0, 8, 3, 1,
+            "Initiation gap max", 0, 8, 4, 1,
             help="Longest number of weeks between appointments during Initiation.",
         )
 
     with st.expander("Stabilisation cadence (weeks)", expanded=False):
         stab_gap_min = st.slider(
-            "Stabilisation gap min", 0, 12, 3, 1,
+            "Stabilisation gap min", 0, 12, 4, 1,
             help="Shortest number of weeks between appointments during Stabilisation.",
         )
         stab_gap_max = st.slider(
@@ -247,7 +247,7 @@ with st.sidebar:
 
     with st.expander("Maintenance cadence (weeks)", expanded=False):
         maint_gap_min = st.slider(
-            "Maintenance gap min", 0, 24, 10, 1,
+            "Maintenance gap min", 0, 24, 8, 1,
             help="Shortest number of weeks between appointments during Maintenance.",
         )
         maint_gap_max = st.slider(
