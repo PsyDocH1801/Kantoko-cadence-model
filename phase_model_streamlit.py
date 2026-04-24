@@ -138,6 +138,8 @@ st.set_page_config(
 
 st.title("Theoretical caseload cadence model")
 st.markdown(
+    "This model is based on the appointment cadence principle described "
+    "[here](https://coda.io/d/Clinician-Knowledge-Base_dmavOZ76Uoi/Appointment-Cadence_su-QMYS0#_luw2WBku). "
     "Explore how a clinician's caseload distributes across clinical phases as patients "
     "progress through successive appointments. Adjust the sliders on the left to see the "
     "effect on phase mix and expected appointment cadence."
