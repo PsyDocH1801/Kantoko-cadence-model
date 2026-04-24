@@ -1,6 +1,6 @@
-# Kantoko cadence model
+# Kantoko-cadence-model
 
-Interactive theoretical cadence model for ADHD patient appointment scheduling.
+Repo supporting the streamlit appointment cadence model.
 
 ## Run locally
 
@@ -11,4 +11,4 @@ streamlit run phase_model_streamlit.py
 
 ## Deploy
 
-Hosted on Streamlit Community Cloud from this repo — any push to `main` redeploys automatically.
+Hosted on Streamlit Community Cloud from this repo. Any push to `main` redeploys automatically.
