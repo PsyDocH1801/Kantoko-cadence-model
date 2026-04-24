@@ -169,9 +169,15 @@ distribution of complexity scores.
 
 ### Key assumptions
 
-- Within each phase, most appointments are booked at the shorter end of that phase's gap range, with progressively fewer booked at the longer end. As a patient progresses through Stabilisation or Maintenance, their typical appointment gap gradually lengthens toward the upper end of that phase's range. In Maintenance, the typical gap reaches the maximum after {MAINT_RAMP_TRANSITIONS} appointments and then holds steady.
-- Preparation is a fixed assumption, not adjustable via sliders: {int(PREP_FRACTION * 100)}% of patients spend {PREP_DURATION} transition in Preparation (with a {PREP_GAP_WEEKS[0]} to {PREP_GAP_WEEKS[1]} week gap) before moving into Initiation. This represents patients awaiting pre-initiation investigations.
-- C20 / C50 / C80 refer to complexity values 0.20, 0.50, and 0.80 - roughly the simplest 5%, median, and most complex 5% of the caseload at default settings.
+**How appointments are distributed within each phase's cadence range (lower to upper bracket):**
+
+- **Initiation**: appointments are predominantly booked at the shorter end of the Initiation cadence range throughout the phase.
+- **Stabilisation**: appointments are predominantly booked at the shorter end when a patient first enters Stabilisation. The typical gap then slides gradually toward the longer end as they progress through the phase, reaching the longer end by the time they enter Maintenance.
+- **Maintenance**: appointments are predominantly booked at the shorter end when a patient first enters Maintenance. The typical gap slides gradually toward the longer end over their first {MAINT_RAMP_TRANSITIONS} Maintenance appointments and then stays at the longer end.
+
+**Preparation is a fixed assumption**, not adjustable via sliders: {int(PREP_FRACTION * 100)}% of patients spend {PREP_DURATION} transition in Preparation (with a {PREP_GAP_WEEKS[0]} to {PREP_GAP_WEEKS[1]} week gap) before moving into Initiation. This represents patients awaiting pre-initiation investigations.
+
+**C20 / C50 / C80** refer to complexity values 0.20, 0.50, and 0.80 - roughly the simplest 5%, median, and most complex 5% of the caseload at default settings.
 """)
 
 with st.sidebar:
